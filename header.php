@@ -42,6 +42,10 @@
         <?php } ?>
         <li><a href="contact.php">Contact</a></li>
     </ul>
+    <form action="search.php" method="POST">
+        <input type="text" name="search">
+        <input type="submit" value="Search">
+    </form>
     <?php if (!isset($_SESSION['user'])) { ?>
     <form method="POST">
         <input type="text" name="user" placeholder="Username"/>

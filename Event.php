@@ -34,7 +34,9 @@ class Event {
         echo '<h2>' . $this->title . '</h2>';
         echo '<p> Event date:' . $this->date . '</p>';
         echo '<p>' . $this->type . '</p>';
-        echo '<img src="' . $this->img . '" alt="event image"/>';
+        if ($this->img != false) {
+            echo '<img src="' . $this->img . '" alt="event image"/>';            
+        }
         if (session_status() != 2) {
             session_start();
         }

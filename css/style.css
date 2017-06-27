@@ -34,10 +34,12 @@
     animation-timing-function: linear;
 }
 
+img {
+    max-width: 10vw;
+}
 
 ul {
     display: flex;
-    width: 50%;
 }
 
 li {

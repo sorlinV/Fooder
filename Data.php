@@ -57,15 +57,6 @@ class Data {
         $this->saveData();
     }
 
-    function getEvent($eventtitle) {
-        foreach ($this->events as $event) {
-            if ($event->getTitle() == $eventtitle) {
-                return $event;
-            }
-        }
-        return false;
-    }
-    
     function addEvent(Event $event) {
         foreach ($this->events as $e) {
             if ($e->getTitle() == $event->getTitle()) {
@@ -79,10 +70,36 @@ class Data {
         }
         $this->saveData();
     }
+
+    function getEvent($eventtitle) {
+        foreach ($this->events as $event) {
+            if ($event->getTitle() == $eventtitle) {
+                return $event;
+            }
+        }
+        return false;
+    }    
     
     function affEvents() {
         foreach ($this->events as $event) {
             $event->html();
+        }
+    }
+    
+    function search($value) {
+        if ($value != "") {
+            echo "<h2>Users find:</h2>";
+            foreach ($this->users as $u) {
+                if (strpos($u->getUser(), $value) !== false) {
+                    $u->toHtml();
+                }
+            }
+            echo "<h2>Event find:</h2>";
+            foreach ($this->events as $e) {
+                if (strpos($e->getTitle(), $value) !== false) {
+                    $e->html();
+                }
+            }
         }
     }
 }
