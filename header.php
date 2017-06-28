@@ -8,11 +8,7 @@
     }
     $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     // DEFINE $data
-    if (file_exists("data")) {
-        $data = unserialize(file_get_contents("data"));
-    } else {
-        $data = new Data();
-    }
+    $data = new Data();
     //VERIF LOGIN/REGISTER FOR SESSION
     if (isset($post['user']) && isset($post['password'])) {
         $post['password'] = hash("sha256", $post['password']);
@@ -23,7 +19,21 @@
     //VERIF SUB FOR EVENT
     if (isset($post['sub']) && isset($_SESSION['user'])) {
         $data->getEvent($post['sub'])->addUser($_SESSION['user']);
-        $data->saveData();
+    }
+    //VERIF SUB/UNSUUB fOR USER
+    if (isset($_SESSION['user']) && isset($post['subuser'])) {
+        $suber = $data->getUser($_SESSION['user']->getUser());
+        $suber->addSubscriber($post['subuser']);
+        $u = $data->getUser($post['subuser']);
+        $u->addFollower($_SESSION['user']->getUser());
+        $_SESSION['user'] = $suber;
+    }
+    if (isset($_SESSION['user']) && isset($post['unsubuser'])) {
+        $suber = $data->getUser($_SESSION['user']->getUser());
+        $suber->rmSubscriber($post['subuser']);
+        $u = $data->getUser($post['subuser']);
+        $u->rmFollower($_SESSION['user']->getUser());
+        $_SESSION['user'] = $suber;
     }
     //VERIF DECONNECTION
     if (isset($post['deco'])) {

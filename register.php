@@ -22,19 +22,20 @@ and open the template in the editor.
                 $data = new Data();
                 $data->saveData();
             }
-            if (isset($post['user']) && isset($post['password']) && isset($post['password2'])) {
+            if (isset($post['user']) && isset($post['password']) && isset($post['password2'])
+                    && $post['password'] == $post['password2'] && isset($post['adresse'])
+                     && isset($post['firstname']) && isset($post['lastname'])) {
                 if (!is_dir("imgUser")) {
                     mkdir("imgUser");
                 }
                 if (isset($_FILES['avatar'])) {
-                    move_uploaded_file($_FILES['avatar']['tmp_name'],
-                            "imgUser/" . $post['user'] . ".png");
-                    $user = new User($post['user'],
-                            hash("sha256", $post['password']), "imgUser/" . $post['user'] . ".png");
+                    $img = "imgUser/" . $post['user'] . ".png";
+                    move_uploaded_file($_FILES['avatar']['tmp_name'], $img);
                 } else {
-                    $user = new User($post['user'],
-                            hash("sha256", $post['password']), "imgUser/default.png");
-                }
+                    $img = "imgUser/default.png";
+                }                
+                $user = new User($post['user'], hash("sha256", $post['password']), $img
+                        , $post['adresse'], $post['firstname'], $post['lastname']);
                 $data->addUser($user);
             }
             include_once 'header.php';
@@ -43,6 +44,12 @@ and open the template in the editor.
             <form  enctype="multipart/form-data" action="" method="POST">
                 <label for="user">Username :</label>
                 <input type="text" name="user">
+                <label for="lastname">Lastname :</label>
+                <input type="text" name="lastname">
+                <label for="firstname">Firstname:</label>
+                <input type="text" name="firstname">
+                <label for="adresse">Adresse :</label>
+                <input type="text" name="adresse">
                 <label for="password">Password :</label>
                 <input type="password" name="password">
                 <label for="password2">Confirm password :</label>

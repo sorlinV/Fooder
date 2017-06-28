@@ -3,13 +3,19 @@ class Data {
     private $users;
     private $events;
     
-    function __construct($users = [], $events = []) {
-        $this->users = $users;
-        $this->events = $events;
+    function __construct() {
+        if (file_exists("data")) {
+            $data = unserialize(file_get_contents("data"));
+            $this->users = $data->users;
+            $this->events = $data->events;
+        } else {
+            $this->users = [];
+            $this->events = [];
+        }
     }
 
-    function saveData() {
-        $fd = fopen("data", "w+");
+    function __destruct() {
+        $fd = fopen("data", "w+") or die('[ERROR] Fail to open data.');
         $content = serialize($this);
         fwrite($fd, $content);
         fclose($fd);
@@ -54,7 +60,6 @@ class Data {
         } else {
             $this->users = [$user];
         }
-        $this->saveData();
     }
 
     function addEvent(Event $event) {
@@ -68,7 +73,6 @@ class Data {
         } else {
             $this->events = [$event];
         }
-        $this->saveData();
     }
 
     function getEvent($eventtitle) {

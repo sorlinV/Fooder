@@ -34,8 +34,48 @@
     animation-timing-function: linear;
 }
 
+
+/*=======================
+=========================
+======== USERS ==========
+=========================
+=======================*/
+
+.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border: 1px solid black;
+    max-width: 1000px;
+    margin: 1em auto;
+}
+
+.user h2 {
+    border: 1px solid black;
+}
+
+/*=======================
+=========================
+======== EVENT ==========
+=========================
+=======================*/
+
+.event {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    max-width: 1000px;
+    margin: 1em auto;
+}
+
+.event h2 {
+    border: 1px solid black;
+}
+
+/*=====================*/
+
 img {
-    max-width: 10vw;
+    height: 100px;
 }
 
 ul {
