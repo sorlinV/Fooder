@@ -1,36 +1,46 @@
 <?php
+include_once 'User.php';
+include_once 'Event.php';
 class Data {
     private $users;
     private $events;
-    
+    private $tags;
+
     private function verif_event() {
-        foreach ($this->events as $key=>$event) {
-            $eventdate = intval(str_replace("-", "", $event->getDate()));
-            $actualdate = intval(str_replace("-", "", date("Y-m-d-H-i")));
-            if ($eventdate < $actualdate) {
-                array_splice($this->events, $key, 1);
+        if (count($this->events)) {
+            foreach ($this->events as $key=>$event) {
+                $eventdate = intval(str_replace("-", "", $event->getDate()));
+                $actualdate = intval(str_replace("-", "", date("Y-m-d-H-i")));
+                if ($eventdate < $actualdate) {
+                    array_splice($this->events, $key, 1);
+                }
             }
         }
     }
             
     function __construct() {
-        if (file_exists("users") && file_exists("events")) {
+        if (file_exists("users") && file_exists("events") && file_exists("tags")) {
             $this->users = unserialize(file_get_contents("users"));
             $this->events = unserialize(file_get_contents("events"));
+            $this->tags = unserialize(file_get_contents("tags"));
         } else {
             $this->users = [];
             $this->events = [];
+            $this->tags = [];
         }
-        $this->verif_event();
+//        $this->verif_event();
     }
 
     function saveData() {
         $fd = fopen((__DIR__) . "/users", "w+");
         fwrite($fd, serialize($this->users));
         fclose($fd);
-        $fdm = fopen((__DIR__) . "/events", "w+");
-        fwrite($fdm, serialize($this->events));
-        fclose($fdm);
+        $fda = fopen((__DIR__) . "/events", "w+");
+        fwrite($fda, serialize($this->events));
+        fclose($fda);
+        $fdb = fopen((__DIR__) . "/tags", "w+");
+        fwrite($fdb, serialize($this->tags));
+        fclose($fdb);
     }
     
     function __destruct() {
@@ -68,7 +78,7 @@ class Data {
     function addUser($user) {
         foreach ($this->users as $u) {
             if ($u->getUser() == $user->getUser()) {
-                return ;
+                return false;
             }
         }
         array_push($this->users, $user);
@@ -77,10 +87,22 @@ class Data {
     function addEvent(Event $event) {
         foreach ($this->events as $e) {
             if ($e->getTitle() == $event->getTitle()) {
-                return ;
+                return false;
             }
         }
         array_push($this->events, $event);
+    }
+    
+    function addTags ($tags) {
+        if (gettype($tags) == "string") {
+            array_push($this->tags, $tags);
+        } else {
+            foreach ($tags as $tag) {
+                if (in_array($tag, $this->tags) === false) {
+                    array_push($this->tags, $tag);                    
+                }
+            }
+        }
     }
 
     function getEvent($eventtitle) {
@@ -93,8 +115,10 @@ class Data {
     }    
     
     function affEvents() {
-        foreach ($this->events as $event) {
-            $event->html();
+        if (count($this->events)) {
+            foreach ($this->events as $event) {
+                $event->html();
+            }
         }
     }
     
@@ -113,5 +137,17 @@ class Data {
                 }
             }
         }
+    }
+
+    function getUsers() {
+        return $this->users;
+    }
+
+    function getEvents() {
+        return $this->events;
+    }
+
+    function getTags() {
+        return $this->tags;
     }
 }

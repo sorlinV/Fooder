@@ -75,7 +75,7 @@ class User {
             }
             echo '</ul>';
             echo '</section>';
-            echo '</article>';            
+            echo '</article>'; 
         }
     }
     

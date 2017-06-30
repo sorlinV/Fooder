@@ -34,7 +34,6 @@
     animation-timing-function: linear;
 }
 
-
 /*=======================
 =========================
 ======== USERS ==========
@@ -44,10 +43,16 @@
 .user {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
     border: 1px solid black;
     max-width: 1000px;
     margin: 1em auto;
+}
+
+.user > * {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
 }
 
 .user h2 {
@@ -71,6 +76,16 @@
 .event h2 {
     border: 1px solid black;
 }
+/*=======================
+=========================
+======== EVENT ==========
+=========================
+=======================*/
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+}
 
 /*=====================*/
 
@@ -78,11 +93,11 @@ img {
     height: 100px;
 }
 
-ul {
+header ul {
     display: flex;
 }
 
-li {
+header li {
     margin: 0 3%;
 }
 
