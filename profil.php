@@ -14,7 +14,7 @@ and open the template in the editor.
         <?php
             include_once 'header.php';
             if (isset($_SESSION['user'])) {
-                $_SESSION['user']->toHtmlPrivate();
+                $_SESSION['user']->toHtmlPrivate($data);
             }
         ?>
     </body>

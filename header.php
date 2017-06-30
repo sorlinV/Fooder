@@ -8,7 +8,9 @@
     }
     $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     // DEFINE $data
-    $data = new Data();
+    if (!isset($data)) {
+        $data = new Data();
+    }
     //VERIF LOGIN/REGISTER FOR SESSION
     if (isset($post['user']) && isset($post['password'])) {
         $post['password'] = hash("sha256", $post['password']);
@@ -30,8 +32,8 @@
     }
     if (isset($_SESSION['user']) && isset($post['unsubuser'])) {
         $suber = $data->getUser($_SESSION['user']->getUser());
-        $suber->rmSubscriber($post['subuser']);
-        $u = $data->getUser($post['subuser']);
+        $suber->rmSubscriber($post['unsubuser']);
+        $u = $data->getUser($post['unsubuser']);
         $u->rmFollower($_SESSION['user']->getUser());
         $_SESSION['user'] = $suber;
     }

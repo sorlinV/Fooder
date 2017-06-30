@@ -15,7 +15,7 @@ class User {
     function __construct($user, $password, $img, $adresse, $firstname, $lastname,
             $recette = [], $followers = [], $subscribes = []) {
         $this->user = $user;
-        $this->salt = hash("sha256", random_int());
+        $this->salt = hash("sha256", rand());
         $this->password = hash("sha256", $password.$this->salt);
         $this->img = $img;
         $this->adresse = $adresse;
@@ -32,7 +32,8 @@ class User {
         echo '<aside>';
         echo '<h2>' . $this->user . "</h2>";
         echo '</aside>';
-        if (in_array($this->user, $this->subscribes) == false) {
+        if (isset($_SESSION['user'])
+                && in_array($_SESSION['user']->getUser(), $this->followers) === false) {
             echo '<form method="POST">';
             echo '<input type="hidden" name="subuser" value="' . $this->user . '"/>';
             echo '<input type="submit" value="Subscribe" />';
@@ -46,7 +47,7 @@ class User {
         echo '</article>';
     }
 
-    function toHtmlPrivate () {
+    function toHtmlPrivate ($data) {
         echo '<article class="user">';
         echo '<img src="' . $this->img . '" alt="' . $this->user . ' avatar"/>';
         echo '<section>';
@@ -60,7 +61,7 @@ class User {
             echo '<h3>Subscribes : </h3>';
             echo '<ul>';
             foreach ($this->subscribes as $sub) {
-                echo '<li>' . $sub->getUser() . '</li>';
+                echo '<li>' . $data->getUser($sub)->getUser() . '</li>';
             }
             echo '</ul>';
             echo '</section>';            
@@ -70,7 +71,7 @@ class User {
             echo '<h3>Followers : </h3>';
             echo '<ul>';
             foreach ($this->followers as $follower) {
-                echo '<li>' . $follower->getUser() . '</li>';
+                echo '<li>' . $data->getUser($follower)->getUser() . '</li>';
             }
             echo '</ul>';
             echo '</section>';
@@ -91,18 +92,24 @@ class User {
     }
     
     function addFollower (String $follower) {
-        array_push($this->followers, $follower);
+        if (in_array($follower, $this->followers) === false) {
+            array_push($this->followers, $follower);
+        }
     }
     
     function rmFollower (String $follower) {
-        array_diff($this->followers, [$follower]);
+        $pos = in_array($follower, $this->followers);
+        array_splice($this->followers, 0, $pos);
     }
     
-    function addSubscribe (String $sub) {
-        array_push($this->followers, $sub);
+    function addSubscriber (String $sub) {
+        if (in_array($sub, $this->subscribes) === false) {
+            array_push($this->subscribes, $sub);
+        }
     }
     
-    function rmSubscribes (String $sub) {
-        array_diff($this->followers, [$sub]);
+    function rmSubscriber (String $sub) {
+        $pos = in_array($sub, $this->subscribes);
+        array_splice($this->subscribes, 0, $pos);
     }
 }

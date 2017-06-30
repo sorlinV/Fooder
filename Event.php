@@ -1,15 +1,4 @@
 <?php
-//            <label for="title">Titre de l'event</label>
-//            <input type="text" name="title">
-//            <label for="place">Adresse</label>
-//            <input type="text" name="place">
-//            <label for="type">Type of repas :</label>
-//            <ul>
-//                <li><input type="radio" name="type" value="home">Home</li>
-//                <li><input type="radio" name="type" value="resto">Restaurant</li>
-//            </ul>
-//            <label for="file">Image for event (optionnal)</label>
-//            <input type="file" name="img">
 class Event {
     private $title;
     private $date;
@@ -67,6 +56,10 @@ class Event {
     
     function getTitle() {
         return $this->title;
+    }
+
+    function getDate() {
+        return $this->date;
     }
 
 

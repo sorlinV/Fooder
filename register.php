@@ -16,24 +16,20 @@ and open the template in the editor.
             include_once 'User.php';
             
             $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            if (file_exists("data")) {
-                $data = unserialize(file_get_contents("data"));
-            } else {
-                $data = new Data();
-                $data->saveData();
-            }
+            $data = new Data();
             if (isset($post['user']) && isset($post['password']) && isset($post['password2'])
                     && $post['password'] == $post['password2'] && isset($post['adresse'])
                      && isset($post['firstname']) && isset($post['lastname'])) {
                 if (!is_dir("imgUser")) {
                     mkdir("imgUser");
                 }
-                if (isset($_FILES['avatar'])) {
+                if (isset($_FILES['avatar']) && count($_FILES) != 0
+                        && $_FILES['avatar']['tmp_name'] !== "") {
                     $img = "imgUser/" . $post['user'] . ".png";
                     move_uploaded_file($_FILES['avatar']['tmp_name'], $img);
                 } else {
-                    $img = "imgUser/default.png";
-                }                
+                    $img = "img/default.png";
+                }
                 $user = new User($post['user'], hash("sha256", $post['password']), $img
                         , $post['adresse'], $post['firstname'], $post['lastname']);
                 $data->addUser($user);

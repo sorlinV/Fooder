@@ -3,24 +3,40 @@ class Data {
     private $users;
     private $events;
     
+    private function verif_event() {
+        foreach ($this->events as $key=>$event) {
+            $eventdate = intval(str_replace("-", "", $event->getDate()));
+            $actualdate = intval(str_replace("-", "", date("Y-m-d-H-i")));
+            if ($eventdate < $actualdate) {
+                array_splice($this->events, $key, 1);
+            }
+        }
+    }
+            
     function __construct() {
-        if (file_exists("data")) {
-            $data = unserialize(file_get_contents("data"));
-            $this->users = $data->users;
-            $this->events = $data->events;
+        if (file_exists("users") && file_exists("events")) {
+            $this->users = unserialize(file_get_contents("users"));
+            $this->events = unserialize(file_get_contents("events"));
         } else {
             $this->users = [];
             $this->events = [];
         }
+        $this->verif_event();
     }
 
-    function __destruct() {
-        $fd = fopen("data", "w+") or die('[ERROR] Fail to open data.');
-        $content = serialize($this);
-        fwrite($fd, $content);
+    function saveData() {
+        $fd = fopen((__DIR__) . "/users", "w+");
+        fwrite($fd, serialize($this->users));
         fclose($fd);
+        $fdm = fopen((__DIR__) . "/events", "w+");
+        fwrite($fdm, serialize($this->events));
+        fclose($fdm);
     }
     
+    function __destruct() {
+        $this->saveData();
+    }
+
     function verifUser ($userVerif, $passwordVerif) {
         foreach ($this->users as $user) {
             if ($user->getUser() == $userVerif
@@ -55,11 +71,7 @@ class Data {
                 return ;
             }
         }
-        if (isset($this->users) || count($this->users) == 0) {
-            array_push($this->users, $user);            
-        } else {
-            $this->users = [$user];
-        }
+        array_push($this->users, $user);
     }
 
     function addEvent(Event $event) {
@@ -68,11 +80,7 @@ class Data {
                 return ;
             }
         }
-        if (isset($this->events) || count($this->events) == 0) {
-            array_push($this->events, $event);            
-        } else {
-            $this->events = [$event];
-        }
+        array_push($this->events, $event);
     }
 
     function getEvent($eventtitle) {
